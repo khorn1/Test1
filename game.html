@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #guesses {
+            text-align: center;
+        }
+    </style>
+    <title>Guess the Number Game</title>
+</head>
+<body>
+    <h1>Guess the Number Game</h1>
+    <p>Guess a number between 1 and 100:</p>
+    <input type="number" id="guess" min="1" max="100" onkeyup="handleKeyUp(event)">
+    <button onclick="checkGuess()">Submit Guess</button>
+    <p id="output"></p>
+
+    <div id="guesses">
+        <p>Your guesses:</p>
+        <ul id="guessList"></ul>
+    </div>
+
+    <button onclick="restartGame()">Restart</button>
+
+    <script>
+        let randomNumber = generateRandomNumber();
+        let attempts = 0;
+
+        function generateRandomNumber() {
+            return Math.floor(Math.random() * 100) + 1;
+        }
+
+        function checkGuess() {
+            const guessInput = document.getElementById("guess");
+            const guess = parseInt(guessInput.value);
+
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                alert("Please enter a valid number between 1 and 100.");
+                return;
+            }
+
+            attempts++;
+            const output = document.getElementById("output");
+            const guessList = document.getElementById("guessList");
+
+            if (guess === randomNumber) {
+                output.innerHTML = `Congratulations! You guessed the correct number (${randomNumber}) in ${attempts} attempts.`;
+                guessInput.disabled = true;
+            } else if (guess < randomNumber) {
+                output.innerHTML = `Try a higher number. Attempts: ${attempts}`;
+            } else {
+                output.innerHTML = `Try a lower number. Attempts: ${attempts}`;
+            }
+
+            // Append the guess to the list
+            const listItem = document.createElement("li");
+            listItem.textContent = `Guess #${attempts}: ${guess}`;
+            guessList.appendChild(listItem);
+
+            guessInput.value = ""; // Clear the input box
+        }
+
+        function handleKeyUp(event) {
+            if (event.key === "Enter") {
+                checkGuess();
+            }
+        }
+
+        function restartGame() {
+            const guessInput = document.getElementById("guess");
+            const guessList = document.getElementById("guessList");
+            const output = document.getElementById("output");
+
+            // Reset all game data
+            guessInput.value = "";
+            guessInput.disabled = false;
+            guessList.innerHTML = "";
+            output.innerHTML = "";
+            attempts = 0;
+            randomNumber = generateRandomNumber(); // Generate a new random number
+        }
+    </script>
+</body>
+</html>
